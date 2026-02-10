@@ -1,0 +1,10 @@
+# Cloned source repositories (regenerated via `vcs import`)
+src/
+
+# colcon build artifacts
+build/
+install/
+log/
+
+# Python virtualenv for tools (native builds)
+.venv/

@@ -1,0 +1,37 @@
+services:
+  gz:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        USER_NAME: ${USER_NAME:-dev}
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+    image: gazebo-jetty-dev
+    container_name: gz-dev
+    stdin_open: true
+    tty: true
+
+    # ── NVIDIA GPU ──────────────────────────────────────────────────────
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      # X11 forwarding
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+
+    # ── Volumes: all bind-mounted for host access ───────────────────────
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./gz-jetty.repos:/home/${USER_NAME:-dev}/gazebo_ws/gz-jetty.repos:ro
+      - ./build.bash:/home/${USER_NAME:-dev}/gazebo_ws/build.bash:ro
+      - ./setup.bash:/home/${USER_NAME:-dev}/gazebo_ws/setup.bash:ro
+      - ./src:/home/${USER_NAME:-dev}/gazebo_ws/src
+      - ./build:/home/${USER_NAME:-dev}/gazebo_ws/build
+      - ./install:/home/${USER_NAME:-dev}/gazebo_ws/install
+      - ./log:/home/${USER_NAME:-dev}/gazebo_ws/log
+
+    # ── Networking ──────────────────────────────────────────────────────
+    network_mode: host
+    ipc: host
