@@ -43,6 +43,22 @@ RUN mkdir -p /tmp/gz_src && \
         | sed '/gz\|sdf/d' | tr '\n' ' ') && \
     rm -rf /tmp/gz_src /tmp/gz-jetty.repos /var/lib/apt/lists/*
 
+# ── ROS 2 Jazzy ────────────────────────────────────────────────────────────
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
+      -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
+      > /etc/apt/sources.list.d/ros2.list && \
+    apt-get update && apt-get install -y --no-install-recommends \
+      ros-jazzy-ros-base \
+      ros-jazzy-rviz2 \
+      ros-dev-tools \
+      python3-colcon-ros \
+      ros-jazzy-actuator-msgs \
+      ros-jazzy-gps-msgs \
+      ros-jazzy-vision-msgs \
+      ros-jazzy-nav-msgs \
+    && rm -rf /var/lib/apt/lists/*
+
 # ── Non-root user matching host UID (overridable at build time) ────────────
 ARG USER_NAME=dev
 ARG USER_UID=1000

@@ -6,5 +6,10 @@ build/
 install/
 log/
 
+# ROS 2 overlay workspace (built from source)
+ros_ws/
+!ros_ws/src/cpu_lidar_demo/
+!ros_ws/test_headless.bash
+
 # Python virtualenv for tools (native builds)
 .venv/

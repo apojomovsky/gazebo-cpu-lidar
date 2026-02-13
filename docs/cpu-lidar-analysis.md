@@ -497,6 +497,10 @@ perform the raycast, and transform results back.
 
 ## 9. Implementation Status
 
+### Demonstration
+
+The `cpu_lidar_demo` package in `ros_ws/src/cpu_lidar_demo/` provides a working demonstration of the CPU lidar sensor integrated with ROS 2. It supports decoupled GUI/Server mode, allowing the Gazebo simulation to run headlessly while the GUI and RViz connect remotely — ideal for testing CPU lidar behavior in CI/CD environments without graphics dependencies.
+
 ### Completed
 
 | Component | Package | Status |

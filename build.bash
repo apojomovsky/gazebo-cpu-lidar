@@ -51,6 +51,7 @@ CMAKE_ARGS+=("-DCMAKE_BUILD_TYPE=$BUILD_TYPE")
 
 COLCON_ARGS=(
   build
+  --base-paths src
   --merge-install
   --cmake-args "${CMAKE_ARGS[@]}"
 )

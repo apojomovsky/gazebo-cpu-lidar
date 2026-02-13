@@ -13,10 +13,10 @@ services:
     tty: true
 
     # ── NVIDIA GPU ──────────────────────────────────────────────────────
-    runtime: nvidia
+    runtime: ${DOCKER_RUNTIME:-nvidia}
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-all}
       # X11 forwarding
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
@@ -24,6 +24,7 @@ services:
     # ── Volumes: all bind-mounted for host access ───────────────────────
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${GZ_DEV_DRI:-/dev/dri}:/dev/dri:rw
       - ./gz-jetty.repos:/home/${USER_NAME:-dev}/gazebo_ws/gz-jetty.repos:ro
       - ./build.bash:/home/${USER_NAME:-dev}/gazebo_ws/build.bash:ro
       - ./setup.bash:/home/${USER_NAME:-dev}/gazebo_ws/setup.bash:ro
@@ -31,6 +32,7 @@ services:
       - ./build:/home/${USER_NAME:-dev}/gazebo_ws/build
       - ./install:/home/${USER_NAME:-dev}/gazebo_ws/install
       - ./log:/home/${USER_NAME:-dev}/gazebo_ws/log
+      - ./ros_ws:/home/${USER_NAME:-dev}/gazebo_ws/ros_ws
 
     # ── Networking ──────────────────────────────────────────────────────
     network_mode: host
