@@ -140,6 +140,13 @@ cmd_ros_launch() {
     launch_args="$launch_args $arg"
   done
 
+  # ROS 2 environment variables to fix discovery "hang"
+  local ros_env=(
+    "-e" "ROS_DOMAIN_ID=42"
+    "-e" "ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST"
+    "-e" "FASTDDS_BUILTIN_TRANSPORTS=UDPv4"
+  )
+
   # Determine if we need GPU for server container
   local server_nvidia_env=()
   if [[ "$gz_gui" == "false" || "$hard_headless" == "true" ]]; then
@@ -160,6 +167,7 @@ cmd_ros_launch() {
   echo "Starting gzserver container..."
   docker compose run --rm --name gazebo_ws-gz-server \
     -e "container_mode:=server" \
+    "${ros_env[@]}" \
     "${server_nvidia_env[@]}" \
     gz bash -c "cd ~/gazebo_ws/ros_ws && ros2 launch cpu_lidar_demo lidar_demo.launch.py container_mode:=server${launch_args}" &
   local server_pid=$!
@@ -171,6 +179,7 @@ cmd_ros_launch() {
   echo "Starting UI container..."
   docker compose run --rm --name gazebo_ws-gz-ui \
     -e "container_mode:=ui" \
+    "${ros_env[@]}" \
     gz bash -c "cd ~/gazebo_ws/ros_ws && ros2 launch cpu_lidar_demo lidar_demo.launch.py container_mode:=ui${launch_args}" &
   local ui_pid=$!
 
