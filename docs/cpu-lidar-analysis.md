@@ -21,16 +21,12 @@ The new Gazebo architecture needs an equivalent.
 
 ```mermaid
 flowchart TB
-    subgraph DONE["✅ Already Implemented"]
+    subgraph DONE["✅ All Implemented"]
         direction TB
         RI["gz-physics<br/>GetRayIntersectionFromLastStepFeature"]
         DART["gz-physics / dartsim<br/>Bullet collision backend"]
         RCD["gz-sim component<br/>RaycastData"]
         URI["gz-sim Physics system<br/>UpdateRayIntersections()"]
-    end
-
-    subgraph TODO["❌ Still Needed"]
-        direction TB
         CPUS["gz-sensors<br/>CpuLidarSensor<br/>(extends Sensor)"]
         SYS["gz-sim system plugin<br/>CpuLidar<br/>(like Imu system)"]
     end
@@ -499,7 +495,13 @@ perform the raycast, and transform results back.
 
 ### Demonstration
 
-The `cpu_lidar_demo` package in `ros_ws/src/cpu_lidar_demo/` provides a working demonstration of the CPU lidar sensor integrated with ROS 2. It supports decoupled GUI/Server mode, allowing the Gazebo simulation to run headlessly while the GUI and RViz connect remotely — ideal for testing CPU lidar behavior in CI/CD environments without graphics dependencies.
+The `cpu_lidar_demo` package in `ros_ws/src/cpu_lidar_demo/` provides a working demonstration of the CPU lidar sensor integrated with ROS 2. For the ultimate graphics-free test (no GUI, no rendering, no Mesa/EGL), use `hard_headless` mode:
+
+```bash
+./dev.bash ros-launch lidar_type:=cpu gz_gui:=false rviz:=false render_mode:=software
+```
+
+This runs the Gazebo server without any graphics dependencies — ideal for testing CPU lidar behavior in CI/CD environments, containers, or cloud-based simulation where even Mesa/EGL is unavailable.
 
 ### Completed
 

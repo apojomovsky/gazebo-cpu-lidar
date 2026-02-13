@@ -74,7 +74,7 @@ cmd_stop() {
 
 cmd_clean() {
   _compose down
-  rm -rf build install log
+  rm -rf build install log ros_ws/build ros_ws/install ros_ws/log
   echo "Build artifacts removed."
 }
 
@@ -101,15 +101,15 @@ cmd_ros_build() {
 _cleanup() {
   trap - EXIT SIGINT SIGTERM
   echo ""
-  # Stop the split containers if they exist
+  # Stop the split containers if they are running
   local split_containers=("gazebo_ws-gz-server" "gazebo_ws-gz-ui")
   for container in "${split_containers[@]}"; do
-    if docker ps -a --format '{{.Names}}' | grep -q "^${container}$"; then
+    if docker ps --format '{{.Names}}' | grep -q "^${container}$"; then
       docker rm -f "$container" >/dev/null 2>&1 || true
     fi
   done
   
-  if docker ps --format '{{.Names}}' | grep -q '^gz-dev$' || docker ps -a --format '{{.Names}}' | grep -q '^gz-dev$'; then
+  if docker ps --format '{{.Names}}' | grep -q '^gz-dev$'; then
     echo "Cleaning up: stopping containers..."
     cmd_stop
   fi
@@ -121,6 +121,7 @@ cmd_ros_launch() {
 
   # Parse arguments for special flags (handle both arg:=value and default cases)
   local gz_gui="true"
+  local hard_headless="false"
   local rviz="false"
   local lidar_type="cpu"
   local launch_args=""
@@ -129,6 +130,8 @@ cmd_ros_launch() {
     # Handle arg:=value format
     if [[ "$arg" == gz_gui:=* ]]; then
       gz_gui="${arg#gz_gui:=}"
+    elif [[ "$arg" == hard_headless:=* ]]; then
+      hard_headless="${arg#hard_headless:=}"
     elif [[ "$arg" == rviz:=* ]]; then
       rviz="${arg#rviz:=}"
     elif [[ "$arg" == lidar_type:=* ]]; then
@@ -139,7 +142,7 @@ cmd_ros_launch() {
 
   # Determine if we need GPU for server container
   local server_nvidia_env=()
-  if [[ "$gz_gui" == "false" ]]; then
+  if [[ "$gz_gui" == "false" || "$hard_headless" == "true" ]]; then
     # Strip rendering support for headless server - disable ALL GPU rendering
     server_nvidia_env=(
       "-e" "GZ_DEV_DRI=/dev/null"

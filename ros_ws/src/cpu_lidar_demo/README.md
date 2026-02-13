@@ -52,7 +52,7 @@ source install/setup.bash
 | `lidar_type` | `cpu`, `gpu` | `cpu` | Lidar sensor implementation |
 | `gz_gui` | `true`, `false` | `true` | Launch Gazebo GUI client |
 | `rviz` | `true`, `false` | `true` | Launch RViz2 visualization |
-| `render_mode` | `headless`, `server` | `server` | Rendering mode (only applies when `gz_gui:=true`) |
+| `render_mode` | `software`, `server` | `server` | Rendering mode (only applies when `gz_gui:=true`) |
 
 ### Examples
 
