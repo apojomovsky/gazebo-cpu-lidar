@@ -13,8 +13,8 @@ repositories:
     version: gz-fuel-tools11
   gz-sim:
     type: git
-    url: https://github.com/gazebosim/gz-sim
-    version: gz-sim10
+    url: https://github.com/apojomovsky/gz-sim.git
+    version: feature/cpu-lidar
   gz-gui:
     type: git
     url: https://github.com/gazebosim/gz-gui
@@ -45,8 +45,8 @@ repositories:
     version: gz-rendering10
   gz-sensors:
     type: git
-    url: https://github.com/gazebosim/gz-sensors
-    version: gz-sensors10
+    url: https://github.com/apojomovsky/gz-sensors.git
+    version: feature/cpu-lidar
   gz-tools:
     type: git
     url: https://github.com/gazebosim/gz-tools
