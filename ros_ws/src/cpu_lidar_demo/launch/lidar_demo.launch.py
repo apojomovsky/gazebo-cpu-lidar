@@ -18,21 +18,28 @@ def _launch_setup(context, *args, **kwargs):
     use_rviz = LaunchConfiguration('rviz').perform(context)
     container_mode = LaunchConfiguration('container_mode').perform(context)
     hard_headless = LaunchConfiguration('hard_headless').perform(context)
+    lidar_3d = LaunchConfiguration('lidar_3d').perform(context)
 
     pkg_dir = get_package_share_directory('cpu_lidar_demo')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
 
-    # Determine world file based on lidar_type and hard_headless
+    # Determine world file based on lidar_type, hard_headless, and lidar_3d
+    world_name = ''
     if hard_headless == 'true':
         if lidar_type == 'cpu':
-            world_file = os.path.join(pkg_dir, 'worlds', 'cpu_lidar_hard_headless.sdf')
+            world_name = 'cpu_lidar_hard_headless'
         else:
-            world_file = os.path.join(pkg_dir, 'worlds', 'gpu_lidar_hard_headless.sdf')
+            world_name = 'gpu_lidar_hard_headless'
     else:
         if lidar_type == 'cpu':
-            world_file = os.path.join(pkg_dir, 'worlds', 'cpu_lidar_demo.sdf')
+            world_name = 'cpu_lidar_demo'
         else:
-            world_file = os.path.join(pkg_dir, 'worlds', 'gpu_lidar_demo.sdf')
+            world_name = 'gpu_lidar_demo'
+
+    if lidar_3d == 'true':
+        world_name += '_3d'
+
+    world_file = os.path.join(pkg_dir, 'worlds', f'{world_name}.sdf')
 
     if lidar_type == 'cpu':
         gz_topic = '/cpu_lidar'
@@ -199,6 +206,12 @@ def generate_launch_description():
             choices=['true', 'false'],
             description='Hard headless mode: forces gz_gui:=false to disable GPU rendering, but allows RViz to run. '
                         'Useful to demonstrate CPU lidar works in RViz while GPU lidar does not.',
+        ),
+        DeclareLaunchArgument(
+            'lidar_3d',
+            default_value='false',
+            choices=['true', 'false'],
+            description='Use 3D Lidar world (16 beams vertical)',
         ),
         OpaqueFunction(function=_launch_setup),
     ])
