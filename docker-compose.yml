@@ -35,5 +35,6 @@ services:
       - ./ros_ws:/home/${USER_NAME:-dev}/gazebo_ws/ros_ws
 
     # ── Networking ──────────────────────────────────────────────────────
+    privileged: true
     network_mode: host
     ipc: host
